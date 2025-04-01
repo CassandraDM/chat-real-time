@@ -50,7 +50,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   return (
     <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">
           {title}
         </h2>
       </div>
@@ -60,7 +60,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-sm font-medium leading-6 text-gray-200"
             >
               Adresse email
             </label>
@@ -75,7 +75,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                     message: "Adresse email invalide",
                   },
                 })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+                className="block w-full rounded-lg border bg-[#494D62] border-[#494D62] px-4 py-2 text-gray-200 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm sm:leading-6"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -89,7 +89,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 text-gray-200"
               >
                 Mot de passe
               </label>
@@ -109,7 +109,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                       "Le mot de passe doit contenir au moins 6 caractères",
                   },
                 })}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
+                className="block w-full rounded-lg border bg-[#494D62] border-[#494D62] px-4 py-2 text-gray-200 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm sm:leading-6"
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">
