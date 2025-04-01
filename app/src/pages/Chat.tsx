@@ -10,9 +10,12 @@ import UsersList from "../components/user/UsersList";
 const Chat = () => {
   const { user } = useAuth();
   const socketContext = useContext(SocketContext);
-  if (!socketContext) return null;
 
-  const { connectedUsers } = socketContext;
+  if (!socketContext) {
+    return <div className="text-center p-4">Connecting...</div>;
+  }
+
+  const { socket, connectedUsers } = socketContext;
 
   return (
     <div className="container mx-auto w-full h-screen">
@@ -21,13 +24,14 @@ const Chat = () => {
           {/* Connected Users List with Popover */}
           <div className="backdrop-blur-sm bg-[#252834]/50 h-14 absolute top-0 right-3 w-full z-10 flex items-center px-4">
             <div className="text-white flex items-center">
+              {/* Pass connectedUsers to UsersList */}
               <UsersList connectedUsers={connectedUsers} />
             </div>
           </div>
 
           <div className="overflow-y-scroll h-full">
             <div className="pt-16">
-              <MessageList socket={socketContext.socket} />
+              <MessageList socket={socket} />
             </div>
           </div>
         </div>
@@ -35,7 +39,7 @@ const Chat = () => {
           <div className="w-full gap-4 flex flex-col">
             {user && (
               <div className="">
-                <MessageForm socket={socketContext.socket} />
+                <MessageForm socket={socket} />
               </div>
             )}
             <div className="flex justify-between">

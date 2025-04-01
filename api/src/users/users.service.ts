@@ -17,7 +17,12 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find({
+      order: {
+        lastConnectedAt: 'DESC',
+        lastDisconnectedAt: 'DESC',
+      },
+    });
   }
 
   async findOne(id: string): Promise<User> {
@@ -34,5 +39,10 @@ export class UsersService {
       throw new NotFoundException(`User with email ${email} not found`);
     }
     return user;
+  }
+
+  async update(id: string, data: Partial<User>): Promise<User> {
+    await this.usersRepository.update(id, data);
+    return this.findOne(id);
   }
 }

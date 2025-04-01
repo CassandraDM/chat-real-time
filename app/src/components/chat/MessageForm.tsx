@@ -19,13 +19,29 @@ const MessageForm: React.FC<MessageFormProps> = ({ socket }) => {
 
   const allowToSend = messageText.trim() !== "";
 
+  // In your submit handler or mutation success callback
   const mutation = useMutation({
     mutationFn: (data: CreateMessageDto) => messageService.create(data),
-    onSuccess: (data) => {
-      if (!socket) return;
-      socket.emit("newMessage", data);
+    onSuccess: (newMessage) => {
+      console.log("Message saved, now emitting socket event:", newMessage);
+
+      if (socket) {
+        // Make sure socket is connected before emitting
+        if (socket.connected) {
+          socket.emit("newMessage", newMessage);
+          console.log("Socket event emitted");
+        } else {
+          console.error("Socket not connected - can't emit event");
+        }
+      } else {
+        console.error("Socket is null - can't emit event");
+      }
+
       queryClient.invalidateQueries({ queryKey: ["messages"] });
       reset();
+    },
+    onError: (error) => {
+      console.error("Error creating message:", error);
     },
   });
 

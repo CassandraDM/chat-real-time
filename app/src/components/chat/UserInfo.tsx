@@ -25,7 +25,7 @@ const UserInfo: React.FC = () => {
     <div className="flex items-center gap-3">
       <UserAvatar email={user.email} showStatus={true} size="md" />
       <div className="flex flex-col">
-        <span className="font-medium text-gray-900">{user.email}</span>
+        <span className="font-medium text-gray-200">{user.email}</span>
         <span className="text-sm text-gray-500">En ligne</span>
       </div>
     </div>

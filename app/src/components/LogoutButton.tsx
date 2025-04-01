@@ -15,7 +15,11 @@ const LogoutButton: React.FC = () => {
   if (!user) return null;
 
   return (
-    <Button onClick={handleLogout} variant="ghost" className="cursor-pointer">
+    <Button
+      onClick={handleLogout}
+      variant="ghost"
+      className="cursor-pointer text-gray-200"
+    >
       Déconnexion
     </Button>
   );

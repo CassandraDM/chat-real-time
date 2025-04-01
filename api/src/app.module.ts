@@ -22,7 +22,7 @@ import { Gateway } from './gateway';
     UsersModule,
     AuthModule,
     MessagesModule,
-    Gateway,
   ],
+  providers: [Gateway],
 })
 export class AppModule {}
