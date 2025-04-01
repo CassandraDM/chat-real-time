@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import UserAvatar from "./UserAvatar";
 import { userService, User } from "../../services/userService";
-import { useAuth } from "../../contexts/AuthContext"; // Add this import
+import { useAuth } from "../../contexts/AuthContext";
+import { Socket } from "socket.io-client";
+import { useContext } from "react";
+import { SocketContext } from "../../contexts/SocketContext";
 
 interface UsersListProps {
   connectedUsers: string[];
@@ -13,11 +16,31 @@ const UsersList: React.FC<UsersListProps> = ({ connectedUsers }) => {
   // Add state to control popover visibility
   const [isOpen, setIsOpen] = useState(false);
   const { user: currentUser } = useAuth(); // Get the current user
+  const queryClient = useQueryClient();
+  const socketContext = useContext(SocketContext);
+  const socket = socketContext?.socket;
 
   const { data: users, isLoading } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => userService.findAll(),
+    refetchInterval: 60000,
+    refetchOnMount: true,
   });
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const refreshUsers = () => {
+      console.log("Refreshing users list due to connection change");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    };
+
+    socket.on("connected_users", refreshUsers);
+
+    return () => {
+      socket.off("connected_users", refreshUsers);
+    };
+  }, [socket, queryClient]);
 
   const isUserOnline = (email: string) => {
     return connectedUsers.includes(email);
@@ -41,7 +64,10 @@ const UsersList: React.FC<UsersListProps> = ({ connectedUsers }) => {
       <PopoverTrigger asChild>
         <div
           className="flex items-center cursor-pointer hover:bg-[#3a3f52] px-3 py-1 rounded-md transition-colors"
-          onMouseEnter={() => setIsOpen(true)}
+          onMouseEnter={() => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            setIsOpen(true);
+          }}
           onMouseLeave={() => setIsOpen(false)}
         >
           <span className="font-semibold mr-3 text-gray-200">Online: </span>
@@ -68,7 +94,7 @@ const UsersList: React.FC<UsersListProps> = ({ connectedUsers }) => {
         </div>
       </PopoverTrigger>
       <PopoverContent
-        className="w-80 max-h-80 overflow-y-auto"
+        className="w-80 max-h-80 overflow-y-auto bg-[#252834] border-[#3a3f52] text-gray-200"
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
       >
@@ -87,7 +113,7 @@ const UsersList: React.FC<UsersListProps> = ({ connectedUsers }) => {
                   getOnlineUsers().map((user) => (
                     <div
                       key={user.id}
-                      className="flex items-center justify-between py-2 px-2 hover:bg-gray-100 rounded-md"
+                      className="flex items-center justify-between py-2 px-2 hover:bg-[#3a3f52] rounded-md"
                     >
                       <div className="flex items-center gap-2">
                         <UserAvatar
@@ -123,7 +149,7 @@ const UsersList: React.FC<UsersListProps> = ({ connectedUsers }) => {
                   getOfflineUsers().map((user) => (
                     <div
                       key={user.id}
-                      className="flex items-center justify-between py-2 px-2 hover:bg-gray-100 rounded-md"
+                      className="flex items-center justify-between py-2 px-2 hover:bg-[#3a3f52] rounded-md"
                     >
                       <div className="flex items-center gap-2">
                         <UserAvatar
